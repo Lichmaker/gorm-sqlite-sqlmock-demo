@@ -7,6 +7,7 @@ import (
 )
 
 type Menu struct {
+	Id        int64          `json:"id" gorm:"column:id;primaryKey;autoIncrement;not null;"`
 	ParentId  int64          `json:"parentId" gorm:"column:parentId;not null;"`
 	Title     string         `json:"title" gorm:"column:title;not null;"`
 	Name      string         `json:"name" gorm:"column:name;not null;"`
@@ -21,4 +22,10 @@ type Menu struct {
 
 func Insert(model *Menu) error {
 	return DB.Model(model).Create(model).Error
+}
+
+func GetAllByParentId(pid int64) ([]Menu, error) {
+	var data []Menu
+	err := DB.Model(Menu{}).Where("parentId = ?", pid).Find(&data).Error
+	return data, err
 }
